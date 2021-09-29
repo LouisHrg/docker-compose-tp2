@@ -1,0 +1,22 @@
+version: "3.4"
+
+services:
+  php:
+    build: .docker/php
+    volumes:
+      - ./app:/home/app:rw
+  web:
+    image: nginx:1.15-alpine
+    depends_on:
+      - php
+    ports:
+      - "9999:80"
+    volumes:
+      - ./app:/home/app:ro
+      - ./.docker/nginx:/etc/nginx/conf.d:ro
+
+  composer:
+    image: composer:2.1.8
+    volumes:
+      - ./app:/app
+    command: composer install
